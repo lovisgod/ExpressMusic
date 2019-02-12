@@ -33,15 +33,24 @@ app.get('/music', function(req,res){
 	
 });
 app.get('/download', function(req,res){
+	//here we pass in the id of the song as a query
 	var fileId = req.query.id;
+	//here we created a variable file and set the value to be the file name (the path name)
 	var file = __dirname + '/music/' + fileId;
+
+	//here we use fs to check if the file exist in the location
 	fs.exists(file,function(exists){
 		if(exists)
 		{
+			//if the file exist we use setheader to set the file name and also to set the content type
 			res.setHeader('Content-disposition', 'attachment; filename=' + fileId);
 			res.setHeader('Content-Type', 'application/audio/mpeg3')
+			// we create a variable and we set the value to the return of createReadStream() method 
+			//that takes in file variable as parameter
 			var rstream = fs.createReadStream(file);
+			//here we push the return value into the response. 
 			rstream.pipe(res);
+			res.statusCode(200);
 		}
 		else
 		{
